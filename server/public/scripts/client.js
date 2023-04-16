@@ -6,6 +6,7 @@ function onReady() {
     console.log('JQ');
     // Establish Click Listeners
     $('#addButton').on('click', createTasks);
+    $('#deleteButton').on('click', deleteTask);
 
     // load existing tasks on page load
   getTasks();
@@ -18,7 +19,25 @@ function createTasks(event) {
     // using a test object
     let taskToSend = $('#taskIn').val()
     // call newTask with the new obejct
-    newTask(taskToSend);
+    freshTask(taskToSend);
+  }
+
+  function freshTask(newTask) {
+    console.log('in newTask');
+    // ajax call to server to get tasks
+    $.ajax({
+      method: 'POST',
+      url: '/tasks',
+      data: {
+        task: newTask
+      }
+    }).then(function (response) {
+      console.log(response);
+      $('#taskList').empty();
+      getTasks()
+    }).catch(function (error) {
+      console.log('there was an error posting tasks');
+    })
   }
 
   function getTasks() {
@@ -42,8 +61,21 @@ function createTasks(event) {
     for (let task of taskArray) {
       $('#taskList').append(`
       <li data-id=${task.id}>
+      <button id="deleteButton">Delete</button>
+      <button id="completeButton">Complete</button>
       ${task.task}    
       </li>
       `)
     }
+  }
+
+  function deleteTask() {
+    let idToDelete = $(this).parent().data('id');
+    console.log(idToDelete);
+    $.ajax({
+      method: 'DELETE',
+      url: `/tasks/${idToDelete}`
+    }).then(function (response) {
+      getTasks();
+    })
   }

@@ -37,5 +37,48 @@ taskRouter.get('/', (req, res) => {
         });
 });
 
+// POST
+taskRouter.post('/', (req, res) => {
+    let newTask = req.body;
+    let sqlText = `
+    INSERT INTO "tasks"
+    ("task")
+    VALUES
+    ($1)
+  `;
+
+    let sqlValues = [newTask.task];
+
+    pool
+        .query(sqlText, sqlValues)
+        .then((dbRes) => {
+            res.sendStatus(201);
+        })
+        .catch((dbErr) => {
+            console.log('Post error', dbErr);
+            res.sendStatus(500);
+        });
+});
+
+// DELETE
+taskRouter.delete('/:id', (req, res) => {
+    console.log(req.params);
+    let theIdToDelete = req.params.id;
+    let sqlText = `
+      DELETE FROM "tasks"
+        WHERE "id"=$1;
+    `
+    let sqlValues = [theIdToDelete]
+    pool.query(sqlText, sqlValues)
+        .then((dbRes) => {
+            res.sendStatus(200);
+        })
+        .catch((dbErr) => {
+            console.log('delete /task error:', dbErr);
+            res.sendStatus(500);
+        })
+})
+
+
 
 module.exports = taskRouter;
