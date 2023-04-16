@@ -5,19 +5,18 @@ $(document).ready(onReady);
 function onReady() {
     console.log('JQ');
     // Establish Click Listeners
-    $('#addButton').on('click', setupClickListeners);
+    $('#addButton').on('click', createTasks);
 
     // load existing tasks on page load
   getTasks();
 }
 
-function setupClickListeners() {
+function createTasks(event) {
+    event.preventDefault();
     console.log('in addButton on click');
     // get user input and put in an object
     // using a test object
-    let taskToSend = {
-      name: $('#taskIn').val(),
-    };
+    let taskToSend = $('#taskIn').val()
     // call newTask with the new obejct
     newTask(taskToSend);
   }
