@@ -79,6 +79,28 @@ taskRouter.delete('/:id', (req, res) => {
         })
 })
 
+// PUT
+taskRouter.put('/:id', (req, res) => {
+    let theIdToUpdate = req.params.id;
+    let completeStatus = 'You have completed your task - well done!';
+    let sqlText = `
+      UPDATE "tasks"
+        SET "task"=$1
+        WHERE "id"=$2;
+    `
+    let sqlValues = [completeStatus, theIdToUpdate];
+    pool.query(sqlText, sqlValues)
+        .then((dbRes) => {
+            res.sendStatus(200);
+        })
+        .catch((dbErr) => {
+            console.log('PUT /tasks/:id fail:', dbErr);
+            res.sendStatus(500);
+        })
+})
+
+
+
 
 
 module.exports = taskRouter;

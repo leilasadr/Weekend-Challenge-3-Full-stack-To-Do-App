@@ -7,6 +7,7 @@ function onReady() {
     // Establish Click Listeners
     $('#addButton').on('click', createTasks);
     $('#taskList').on('click','#deleteButton', deleteTask);
+    $('#taskList').on('click', '#completeButton', updateStatus);
 
     // load existing tasks on page load
   getTasks();
@@ -50,6 +51,7 @@ function createTasks(event) {
       console.log('GOT our tasks!', response)
       // need function to append tasks to the DOM
       $('#taskList').empty();
+
       appendTasks(response)
     }).catch(function (error) {
       console.log('Could not GET tasks at this time! Try again later.')
@@ -59,15 +61,22 @@ function createTasks(event) {
   
   function appendTasks(taskArray) {
     for (let task of taskArray) {
-      $('#taskList').append(`
+      let taskItem = $('#taskList').append(`
       <li data-id=${task.id}>
       <button id="deleteButton">Delete</button>
       <button id="completeButton">Complete</button>
       ${task.task}    
       </li>
       `)
+      let taskClass ;
+      if (task.completed) {
+        taskClass = 'completed';
+        taskItem.css('background-color', 'green');
+      }
+      $('#taskList').append(taskItem);
     }
-  }
+    }
+  
 
   function deleteTask() {
     let idToDelete = $(this).parent().data('id');
@@ -81,3 +90,19 @@ function createTasks(event) {
         alert('something broke');
       })
   }
+
+  function updateStatus() {
+    let idToUpdate = $(this).parent().data('id');
+    let taskItem = $(this).closest('li');
+    console.log(idToUpdate);
+    $.ajax({
+      method: 'PUT',
+      url: `/tasks/${idToUpdate}`,
+    }).then(function (response) {
+      taskItem.css('background-color', 'green');
+      getTasks()
+    }).catch(function (error) {
+      console.log('Update Failed:', error);
+    })
+  }
+
