@@ -6,7 +6,7 @@ function onReady() {
     console.log('JQ');
     // Establish Click Listeners
     $('#addButton').on('click', createTasks);
-    $('#deleteButton').on('click', deleteTask);
+    $('#taskList').on('click','#deleteButton', deleteTask);
 
     // load existing tasks on page load
   getTasks();
@@ -77,5 +77,7 @@ function createTasks(event) {
       url: `/tasks/${idToDelete}`
     }).then(function (response) {
       getTasks();
-    })
+    }).catch(function(error) {
+        alert('something broke');
+      })
   }
