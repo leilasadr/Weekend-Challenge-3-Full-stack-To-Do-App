@@ -6,8 +6,8 @@ function onReady() {
     console.log('JQ');
     // Establish Click Listeners
     $('#addButton').on('click', createTasks);
-    $('#taskList').on('click','#deleteButton', deleteTask);
-    $('#taskList').on('click', '#completeButton', updateStatus);
+    $('#taskList').on('click','.deleteButton', deleteTask);
+    $('#taskList').on('click', '.completeButton', updateStatus);
 
     // load existing tasks on page load
   getTasks();
@@ -65,8 +65,8 @@ function createTasks(event) {
         if(task.task === 'You have completed your task - well done!') {
           $('#taskList').append(`
           <li id="completeBG" data-id=${task.id}>
-          <button id="deleteButton">Delete</button>
-          <button id="completeButton">Complete</button>
+          <button class="deleteButton">Delete</button>
+          <button class="completeButton">Complete</button>
           ${task.task}    
           </li>
         `)
@@ -74,8 +74,8 @@ function createTasks(event) {
         else {
      $('#taskList').append(`
       <li id="incompleteBG" data-id=${task.id}>
-      <button id="deleteButton">Delete</button>
-      <button id="completeButton">Complete</button>
+      <button class="deleteButton">Delete</button>
+      <button class="completeButton">Complete</button>
       ${task.task}    
       </li>
       `)
