@@ -19,6 +19,7 @@ function createTasks(event) {
     // get user input and put in an object
     // using a test object
     let taskToSend = $('#taskIn').val()
+    $('#taskIn').val('')
     // call newTask with the new obejct
     freshTask(taskToSend);
   }
@@ -61,20 +62,25 @@ function createTasks(event) {
   
   function appendTasks(taskArray) {
     for (let task of taskArray) {
-      let taskItem = $('#taskList').append(`
-      <li data-id=${task.id}>
+        if(task.task === 'You have completed your task - well done!') {
+          $('#taskList').append(`
+          <li id="completeBG" data-id=${task.id}>
+          <button id="deleteButton">Delete</button>
+          <button id="completeButton">Complete</button>
+          ${task.task}    
+          </li>
+        `)
+        }
+        else {
+     $('#taskList').append(`
+      <li id="incompleteBG" data-id=${task.id}>
       <button id="deleteButton">Delete</button>
       <button id="completeButton">Complete</button>
       ${task.task}    
       </li>
       `)
-      let taskClass ;
-      if (task.completed) {
-        taskClass = 'completed';
-        taskItem.css('background-color', 'green');
-      }
-      $('#taskList').append(taskItem);
     }
+      }
     }
   
 
@@ -93,13 +99,11 @@ function createTasks(event) {
 
   function updateStatus() {
     let idToUpdate = $(this).parent().data('id');
-    let taskItem = $(this).closest('li');
     console.log(idToUpdate);
     $.ajax({
       method: 'PUT',
       url: `/tasks/${idToUpdate}`,
     }).then(function (response) {
-      taskItem.css('background-color', 'green');
       getTasks()
     }).catch(function (error) {
       console.log('Update Failed:', error);
